@@ -1,0 +1,46 @@
+from numba import cuda
+import numpy
+from numpy import *
+
+@cuda.jit
+def my_kernel(data, vetor):
+    # Thread id in a 1D block
+    tx = cuda.threadIdx.x
+    # Block id in a 1D grid
+    ty = cuda.blockIdx.x
+    # Block width, i.e. number of threads per block
+    bw = cuda.blockDim.x
+
+    # Compute flattened index inside the array
+    pos = tx + ty * bw
+
+    i = 0
+
+    while i < data.size:
+        aux = 0
+        for n in data:
+            if (data[i] == n):
+                aux += 1
+
+        vetor[data[i] - 1] = aux
+
+        i = i + 1
+
+data = random.randint(1, 11, size=(100))
+print(data)
+# print(f"dataMatriz {data}")
+vetor = numpy.empty([10])
+# números de threads por bloco
+threads_per_block = 32
+
+# número de blocos por grid
+blocks_per_grid = (len(data) + (threads_per_block - 1))
+
+# iniciando o kernel
+my_kernel[blocks_per_grid, threads_per_block](data, vetor)
+
+# mostra o resultado
+
+print(vetor)
+
+
