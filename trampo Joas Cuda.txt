@@ -28,7 +28,6 @@ def my_kernel(data, vetor):
 
 data = random.randint(1, 11, size=(100))
 print(data)
-# print(f"dataMatriz {data}")
 vetor = numpy.empty([10])
 # números de threads por bloco
 threads_per_block = 32
